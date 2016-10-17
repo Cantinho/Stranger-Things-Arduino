@@ -14,7 +14,8 @@ License: Apache 2.0
 ----------------------------------------
 */
  
-int const DELAY = 2000; //delay 74HC595
+int const DELAY = 1000; //delay 74HC595
+int const CLEAR_DELAY = 500; //delay 74HC595
 
 // First Shift Register 74HC595
 int const clockSR1 = 2; // clock
@@ -35,8 +36,16 @@ int const dataSR3  = 10; // data
 int const letterY  = 11; // setted to pin 11
 int const letterZ  = 12; // setted to pin 12
 
- 
+void (*letterFunction[26]) ();
+
+
+// SR1 = [a:1, b:2, c:3, d:4, e:5, f:6, g:7, h:8]
+// SR2 = [i:1, j:2, k:3, l:4, m:5, n:6, o:7, p:8]
+// SR3 = [q:1, r:2, s:3, t:4, u:5, v:6, w:7, x:8]
 void setup() {
+
+  Serial.begin(9600);      // open the serial port at 9600 bps:
+  setupLetterFunctionArray();
   // setting pins as output
   pinMode(clockSR1,OUTPUT);
   pinMode(latchSR1,OUTPUT);
@@ -51,6 +60,35 @@ void setup() {
   pinMode(letterZ, OUTPUT);
 }
 
+void setupLetterFunctionArray() {
+    letterFunction[0] = a;
+    letterFunction[1] = b;
+    letterFunction[2] = c;
+    letterFunction[3] = d;
+    letterFunction[4] = e;
+    letterFunction[5] = f;
+    letterFunction[6] = g;
+    letterFunction[7] = h;
+    letterFunction[8] = i;
+    letterFunction[9] = j;
+    letterFunction[10] = k;
+    letterFunction[11] = l;
+    letterFunction[12] = m;
+    letterFunction[13] = n;
+    letterFunction[14] = o;
+    letterFunction[15] = p;
+    letterFunction[16] = q;
+    letterFunction[17] = r;
+    letterFunction[18] = s;
+    letterFunction[19] = t;
+    letterFunction[20] = u;
+    letterFunction[21] = v;
+    letterFunction[22] = w;
+    letterFunction[23] = x;
+    letterFunction[24] = y;
+    letterFunction[25] = z; 
+}
+
 // Clear all shift registers and Y & Z pins.
 void clearAll() {
   clearSR(1);
@@ -62,7 +100,7 @@ void clearAll() {
 
 // Clear a shiftRegister
 void clearSR(int shiftRegister) {
-  led(shiftRegister, 0, 0);
+  led(shiftRegister, 0, CLEAR_DELAY);
 }
 
 // Set a value to a shift register and a delay
@@ -192,6 +230,7 @@ void o() {
 void p() {
     led(2, 128, DELAY);
 }
+
 
 // SR3 = [q:1, r:2, s:3, t:4, u:5, v:6, w:7, x:8]
 void q() {
@@ -362,6 +401,48 @@ void mebeija() {
     clearAll();
 }
 
+void showText( char text[] ) {
+    char* textPtr;
+    textPtr = text;
+  
+    /* loop until null is found */
+    for (int i=0; textPtr[ i ]; i++) {
+        Serial.println((int) textPtr[i] - 97);
+        showLetter(textPtr[i]);
+    } 
+}
+
+
+
+void showLetter(char letter) {
+  if(letter-97 >= 0 && letter-97 <= 122)
+    (*letterFunction[ ((int) letter) - 97]) ();
+  clearAll();
+}
+/*
+void showLetter(char letter) {
+    switch (letter) {
+        case 'a':
+            a();
+        break;
+        case 'b':
+            b();
+        break;
+        case 'c':
+            c();
+        break;
+        case 'd':
+            d();
+        break;
+        default: 
+        // if nothing else matches, do the default
+        // default is optional
+        break;
+    }
+    clearAll();
+}
+*/
+
 void showText(int index) {
     if (index == 0 ) {
         testSR1();
@@ -388,11 +469,24 @@ void loop() {
 
     clearAll();
     // wait time between a char and other.
-    delay(1000);
+    delay(200);
     
-    showText(0);
+    //showText(0);
+    showText("abcdefgh");
     clearAll();
     
-    delay(1000);
+    showText("fora temer"); // or showText(1);
+    clearAll();
+    
+    showText("run"); // or showText(2);
+    clearAll();
+    
+    showText("masoq"); // or showText(3);
+    clearAll();
+    
+    showText("me beija"); // or showText(4);
+    clearAll();
+    
+    delay(200);
      
 }
