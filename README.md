@@ -18,7 +18,7 @@ Hardware specifications:
   - 26x - Resistor 210 Ohms 5% (Red Brown Brown Gold) or another fits.
   - 1X - USB cable
   
-  
+ 
   
   
 
